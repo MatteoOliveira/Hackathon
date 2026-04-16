@@ -30,9 +30,7 @@ export default async function SportsPage() {
   const { data: sports } = await supabase
     .from('sports')
     .select('id, nom, slug, description, niveau_requis, intensite, accessibilite_handicap, accessibilite_debutant, type_activite, tags, icon')
-    .order('nom', { ascending: true })
-    .throwOnError()
-    .catch(() => ({ data: null }));
+    .order('nom', { ascending: true });
 
   return (
     <main id="main-content" className="py-12">
