@@ -12,11 +12,9 @@ export default async function ComptePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('prenom, centres_interet, consent_notifs')
-    .eq('id', user!.id)
-    .single();
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('prenom, centres_interet, consent_notifs').eq('id', user.id).single()
+    : { data: null };
 
   return (
     <div>

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 
 const compteNavLinks = [
   { href: '/compte', label: 'Tableau de bord' },
@@ -11,11 +11,10 @@ const compteNavLinks = [
 
 // Layout protégé — redirige vers /connexion si non authentifié
 export default async function CompteLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect('/connexion?redirect=/compte');
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect('/connexion?redirect=/compte');
   }
 
   return (
