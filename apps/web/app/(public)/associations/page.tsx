@@ -27,9 +27,7 @@ export default async function AssociationsPage() {
     .from('associations')
     .select('id, nom, slug, description, logo_url, site_web, couleur_theme, ordre_affichage')
     .eq('actif', true)
-    .order('ordre_affichage', { ascending: true })
-    .throwOnError()
-    .catch(() => ({ data: null }));
+    .order('ordre_affichage', { ascending: true });
 
   return (
     <main id="main-content" className="py-12">
