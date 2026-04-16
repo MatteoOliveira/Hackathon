@@ -1,0 +1,18 @@
+{
+  "name": "solimouv",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm wasm:build && pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm --filter web lint",
+    "typecheck": "pnpm --filter web typecheck",
+    "wasm:build": "cd crates/matching && wasm-pack build --target web --out-dir ../../apps/web/public/wasm",
+    "wasm:test": "cd crates/matching && cargo test"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
