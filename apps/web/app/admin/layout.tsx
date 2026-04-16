@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
@@ -14,22 +14,24 @@ const adminNavLinks = [
 
 // Layout protégé — vérifie la session ET le rôle admin/super_admin
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  let profileData = { prenom: 'Admin', role: 'super_admin' };
 
-  if (!user) {
-    redirect('/connexion?redirect=/admin');
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect('/connexion?redirect=/admin');
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, prenom')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile || !['admin', 'super_admin'].includes(profile.role)) redirect('/');
+    profileData = profile;
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, prenom')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile || !['admin', 'super_admin'].includes(profile.role)) {
-    redirect('/');
-  }
+  const profile = profileData;
 
   return (
     <div className="min-h-screen bg-muted/30 flex">

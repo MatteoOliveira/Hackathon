@@ -32,7 +32,9 @@ export default async function ProgrammePage() {
     .from('ateliers')
     .select('*, sports(nom, slug), associations(nom, slug, couleur_theme)')
     .eq('actif', true)
-    .order('horaire_debut', { ascending: true });
+    .order('horaire_debut', { ascending: true })
+    .throwOnError()
+    .catch(() => ({ data: null }));
 
   return (
     <main id="main-content" className="py-12">

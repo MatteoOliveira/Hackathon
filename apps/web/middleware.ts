@@ -1,9 +1,18 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+const supabaseConfigured =
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 // Middleware Next.js : rafraîchit la session Supabase sur chaque requête
 // et protège les routes /compte/* et /admin/*
 export async function middleware(request: NextRequest) {
+  // Sans Supabase configuré (dev local sans .env), on laisse passer toutes les requêtes
+  if (!supabaseConfigured) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
